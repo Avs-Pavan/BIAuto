@@ -8,6 +8,9 @@ public class MainFrame extends JFrame {
 
     MainPanel mainPanel;
     public MainFrame() {
+
+
+
         setTitle("Power Bi Automate - TAMU-CC");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

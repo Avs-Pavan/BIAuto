@@ -10,10 +10,14 @@ repositories {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes(
                 'Main-Class': 'org.example.Main'
         )
+    }
+    from('src/main/resources/') {
+        include '*.bat'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
