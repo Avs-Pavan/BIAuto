@@ -1,24 +1,59 @@
 package org.example.main;
 
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.example.util.DatabaseProperties;
 import org.example.util.FileHelper;
 import org.example.util.ParseUtils;
+
 import javax.swing.*;
 
 
+/**
+ * The type Main panel.
+ * This class is used to show the main panel of the application
+ * It contains the db url and db name fields
+ * It also contains the continue button which is used to continue to the next panel
+ * The continue button is disabled until the user enters the db url and db name
+ * The db url and db name are saved to the properties file
+ * The db url is parsed to get the host and port
+ * The db name is used to create the database
+ * The continue button is used to show the data sources panel
+ * The data sources panel is used to show the data sources of the database
+ */
 public class MainPanel extends javax.swing.JPanel {
 
     private final MainFrame mainFrame;
+    /**
+     * The File helper.
+     */
+    FileHelper fileHelper = new FileHelper();
+    /**
+     * The Database properties.
+     */
+    DatabaseProperties databaseProperties = new DatabaseProperties();
+    /**
+     * The Parse utils.
+     */
+    ParseUtils parseUtils = new ParseUtils();
+    private javax.swing.JButton continueButton;
+    private javax.swing.JTextField dbUrl;
+    private javax.swing.JTextField dbName;
 
+    /**
+     * Instantiates a new Main panel.
+     *
+     * @param mainFrame the main frame
+     */
     public MainPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         initComponents();
         startProcess();
     }
 
+    /**
+     * Init components.
+     */
     private void initComponents() {
 
         JLabel jLabel1 = new JLabel();
@@ -74,15 +109,18 @@ public class MainPanel extends javax.swing.JPanel {
         );
     }
 
-
-    // Variables declaration - do not modify
-    private javax.swing.JButton continueButton;
-    private javax.swing.JTextField dbUrl;
-    private javax.swing.JTextField dbName;
-    // End of variables declaration
-
-    FileHelper fileHelper = new FileHelper();
-
+    /**
+     * Start process.
+     * This method is used to start the process
+     * It is used to show the data sources panel
+     * It is used to save the db url and db name to the properties file
+     * It is used to parse the db url to get the host and port
+     * It is used to test the mongo connection
+     * It is used to show alert message if the db url and db name are empty
+     * It is used to show alert message if the mongo connection is not successful
+     * It is used to show alert message if the mongo connection is successful
+     *
+     */
     private void startProcess() {
         continueButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -100,8 +138,13 @@ public class MainPanel extends javax.swing.JPanel {
     }
 
 
-    DatabaseProperties databaseProperties = new DatabaseProperties();
-    ParseUtils parseUtils = new ParseUtils();
+    /**
+     * Test mongo connection boolean.
+     *
+     * @param dbUrl  the db url
+     * @param dbName the db name
+     * @return the boolean
+     */
     private boolean testMongoConnection(String dbUrl, String dbName) {
 
         try {
@@ -119,7 +162,7 @@ public class MainPanel extends javax.swing.JPanel {
             if (e instanceof IllegalStateException)
                 e.printStackTrace();
             else {
-                JOptionPane.showMessageDialog(null, e.getMessage()+"\n\nnError connecting to database, Please recheck db url and db name");
+                JOptionPane.showMessageDialog(null, e.getMessage() + "\n\nnError connecting to database, Please recheck db url and db name");
             }
             return false;
         }

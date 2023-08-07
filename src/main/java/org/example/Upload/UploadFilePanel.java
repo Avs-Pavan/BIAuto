@@ -12,19 +12,43 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * The type Upload file panel.
+ * This class is used to create a panel for the upload file frame
+ * This panel is used to upload the csv file to the database
+ * This panel is used to parse the database URL and extract the domain name, domain username, and domain password
+ * This panel is used to create a new domain model and save it to the database
+ *
+ */
 public class UploadFilePanel extends JPanel {
 
+    /**
+     * The Upload file frame.
+     */
+    UploadFileFrame uploadFileFrame;
+    /**
+     * The Parse utils.
+     * This is used to parse the Urls and extract the domain name, domain username, and domain password
+     */
+    ParseUtils parseUtils = new ParseUtils();
+    /**
+     * The Database properties.
+     */
+    DatabaseProperties databaseProperties = new DatabaseProperties();
     private JButton jButton1;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JPanel jPanel1;
     private JProgressBar jProgressBar1;
     private JTextField jTextField1;
+    private final DataSource dataSource;
 
-
-    UploadFileFrame uploadFileFrame;
-    private DataSource dataSource;
-
+    /**
+     * Instantiates a new Upload file panel.
+     *
+     * @param uploadFileFrame the upload file frame
+     * @param dataSource      the data source
+     */
     public UploadFilePanel(UploadFileFrame uploadFileFrame, DataSource dataSource) {
         this.uploadFileFrame = uploadFileFrame;
         this.dataSource = dataSource;
@@ -110,35 +134,33 @@ public class UploadFilePanel extends JPanel {
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files (*.csv)", "csv");
         fileChooser.setFileFilter(filter);
-
-        // Show the file chooser dialog
         int result = fileChooser.showOpenDialog(uploadFileFrame);
-
-        // Check if a file was selected
         if (result == JFileChooser.APPROVE_OPTION) {
-            // Get the selected file
             File selectedFile = fileChooser.getSelectedFile();
-
-
             processFile(selectedFile.getAbsolutePath());
         }
     }
 
+    /**
+     * Sets progress.
+     *
+     * @param progress the progress
+     */
     public void setProgress(int progress) {
         jProgressBar1.setValue(progress);
     }
 
-    ParseUtils parseUtils = new ParseUtils();
-    DatabaseProperties databaseProperties = new DatabaseProperties();
-
+    /**
+     * Process file.
+     *
+     * @param fileName the file name
+     */
     public void processFile(String fileName) {
         try {
 
             System.out.println("Selected CSV file: " + fileName);
             DomainModel domainModel = parseUtils.parseUrl(databaseProperties.getDbUrl());
             domainModel.setDomainDatabase(databaseProperties.getDbName());
-
-            // Process the selected file (e.g., read and parse the CSV data)
             String batchFilePath = "mongo_import.bat";
             ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "start", "cmd.exe", "/c",
                     batchFilePath,
@@ -146,23 +168,15 @@ public class UploadFilePanel extends JPanel {
                     getCollectionName(),
                     fileName
             );
-
             System.out.println("cmd.exe /c start cmd.exe /c " + batchFilePath + " " + createURI(domainModel) + " " + getCollectionName() + " " + fileName);
-
-            // Create the process and execute the batch file
             Process process = processBuilder.start();
-
-            // Optional: You can read the output of the batch file if needed
             InputStream inputStream = process.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
-
-            // Wait for the batch file execution to complete
             int exitCode = process.waitFor();
-
             if (exitCode == 0) {
                 JOptionPane.showMessageDialog(uploadFileFrame, "Csv dump successful");
                 uploadFileFrame.dispose();
@@ -174,12 +188,25 @@ public class UploadFilePanel extends JPanel {
         }
     }
 
+
+    /**
+     * Process file.
+     * Create a collection name from the data source name
+     * This collection name will be used to create a collection in the database
+     *
+     */
     private String getCollectionName() {
         return dataSource.getName().toLowerCase().replace(" ", "_");
     }
 
+    /**
+     * Create a uri string to connect to the database.
+     * This uri string will be used to connect to the database
+     * @see <a href="https://docs.mongodb.com/manual/reference/connection-string/">MongoDB Connection String</a>
+     * @param domainModel the domain model
+     */
     private String createURI(DomainModel domainModel) {
-        return "mongodb+srv://" + domainModel.getDomainUsername() + ":" + domainModel.getDomainPassword() +"@"+domainModel.getDomainName()+ "/" + domainModel.getDomainDatabase();
+        return "mongodb+srv://" + domainModel.getDomainUsername() + ":" + domainModel.getDomainPassword() + "@" + domainModel.getDomainName() + "/" + domainModel.getDomainDatabase();
     }
 
 }

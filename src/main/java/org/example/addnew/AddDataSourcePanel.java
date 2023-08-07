@@ -7,7 +7,14 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * The type Add data source panel.
+ */
 public class AddDataSourcePanel extends JPanel {
+    /**
+     * The F rame.
+     */
+    AddDataSourceFrame fRame;
     private JButton jButton1;
     private JLabel jLabel1;
     private JLabel jLabel2;
@@ -15,19 +22,23 @@ public class AddDataSourcePanel extends JPanel {
     private JTextArea jTextArea1;
     private JTextField jTextField1;
 
-AddDataSourceFrame fRame;
-    AddDataSourcePanel( AddDataSourceFrame addDataSourceFRame){
+    /**
+     * Instantiates a new Add data source panel.
+     *
+     * @param addDataSourceFRame the add data source f rame
+     */
+    AddDataSourcePanel(AddDataSourceFrame addDataSourceFRame) {
         this.fRame = addDataSourceFRame;
         init();
     }
-    private void init(){
+
+    private void init() {
         jLabel1 = new JLabel();
         jTextField1 = new JTextField();
         jLabel2 = new JLabel();
         jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         jButton1 = new JButton();
-
 
 
         jLabel1.setText("Data source name");
@@ -71,22 +82,20 @@ AddDataSourceFrame fRame;
         );
 
 
-
-
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 String name = jTextField1.getText();
                 String description = jTextArea1.getText();
-                if(name.equals("") || description.equals("")){
+                if (name.equals("") || description.equals("")) {
                     JOptionPane.showMessageDialog(null, "Please fill in all the fields");
-                }else{
+                } else {
                     FileHelper fileHelper = new FileHelper();
                     File file = fileHelper.getFile("data_sources.json");
                     List<DataSource> dataSourceList = fileHelper.readJsonListFromFile(file);
 
                     DataSource dataSource = new DataSource(name, description);
-                    for (DataSource ds: dataSourceList) {
-                        if(ds.getName().equals(dataSource.getName())){
+                    for (DataSource ds : dataSourceList) {
+                        if (ds.getName().equals(dataSource.getName())) {
                             JOptionPane.showMessageDialog(null, "Data source already exists");
                             return;
                         }

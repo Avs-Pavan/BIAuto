@@ -8,20 +8,21 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * The type Data sources panel.
+ * This class is used to display the list of data sources
+ * This class is used to add new data sources
+ * This class is used to delete data sources
+ * This class is used to update data sources
+ * This class is used to select a data source
+ * This class is used to display the details of a data source
+ * This class is used to upload a file to a data source
+ *
+ */
 public class DataSourcesPanel extends JPanel {
 
-    private DataSourceFrame dataSourceFrame;
-
-    public DataSourcesPanel(DataSourceFrame dataSourceFrame) {
-        this.dataSourceFrame = dataSourceFrame;
-        initComponents();
-    }
-
-    private void addNewDataSource(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        dataSourceFrame.showAddNewDataSourcePanel();
-    }
-
+    DefaultListModel<String> model;
+    private final DataSourceFrame dataSourceFrame;
     private JButton addNewButton;
     private JLabel jLabel1;
     private JLabel jLabel2;
@@ -29,7 +30,32 @@ public class DataSourcesPanel extends JPanel {
     private JPanel jPanel1;
     private JScrollPane jScrollPane1;
 
+    /**
+     * Instantiates a new Data sources panel.
+     *
+     * @param dataSourceFrame the data source frame
+     */
+    public DataSourcesPanel(DataSourceFrame dataSourceFrame) {
+        this.dataSourceFrame = dataSourceFrame;
+        initComponents();
+    }
 
+    /**
+     * Add new data source.
+     * This method is called when the add new button is clicked
+     *
+     * @param evt the evt
+     */
+    private void addNewDataSource(java.awt.event.ActionEvent evt) {
+        dataSourceFrame.showAddNewDataSourcePanel();
+    }
+
+    /**
+     * Init components.
+     * This method is called from within the constructor to initialize the form.
+     * This method adds the components to the panel
+     *
+     */
     public void initComponents() {
         jPanel1 = new JPanel();
         jLabel1 = new JLabel();
@@ -74,19 +100,6 @@ public class DataSourcesPanel extends JPanel {
                                         .addComponent(addNewButton))
                                 .addContainerGap())
         );
-
-//        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-//            final List<DataSource> strings = new FileHelper().readJsonListFromFile(new File("data_sources.json"));
-//
-//            public int getSize() {
-//                return strings.size();
-//            }
-//
-//            public String getElementAt(int i) {
-//                return strings.get(i).getName();
-//            }
-//        });
-
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
 
@@ -131,10 +144,15 @@ public class DataSourcesPanel extends JPanel {
         );
     }
 
-    DefaultListModel<String> model;
-
+    /**
+     * Refresh data source list.
+     * This method is called when a new data source is added
+     * or when a data source is deleted
+     * or when a data source is updated
+     * or when a data source is selected
+     *
+     */
     public void refreshDataSourceList() {
-        //TODO
         System.out.println("refreshDataSourceList");
         model.clear();
         List<DataSource> strings = new FileHelper().readJsonListFromFile(new File("data_sources.json"));
